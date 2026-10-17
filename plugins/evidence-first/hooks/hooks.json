@@ -1,0 +1,52 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "node -e \"require(require('node:path').join(process.env.PLUGIN_ROOT, 'hooks/remind.cjs'))\"",
+            "type": "command",
+            "statusMessage": "Checking evidence-first policy",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "node -e \"require(require('node:path').join(process.env.PLUGIN_ROOT, 'hooks/remind.cjs'))\"",
+            "type": "command",
+            "statusMessage": "Checking evidence-first policy",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "node -e \"require(require('node:path').join(process.env.PLUGIN_ROOT, 'hooks/remind.cjs'))\"",
+            "type": "command",
+            "statusMessage": "Checking evidence-first policy",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "command": "node -e \"require(require('node:path').join(process.env.PLUGIN_ROOT, 'hooks/remind.cjs'))\"",
+            "type": "command",
+            "statusMessage": "Checking evidence-first policy",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
