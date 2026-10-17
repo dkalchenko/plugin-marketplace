@@ -75,7 +75,7 @@ This GitHub/local marketplace is separate from the public ChatGPT plugin directo
 README.md
 plugins/
   evidence-first/
-    plugin.json
+    .codex-plugin/plugin.json
     README.md
     hooks/
     skills/
@@ -83,7 +83,7 @@ plugins/
 tests/marketplace.test.cjs
 ```
 
-The marketplace has no root `plugin.json`. Each plugin owns its manifest, skills, hooks, and version. Catalog paths resolve from the repository root.
+The marketplace has no root `plugin.json`. Each plugin owns its manifest, skills, hooks, and version. Catalog paths resolve from the repository root. Evidence First uses `.codex-plugin/plugin.json` because affected Codex versions silently skip hooks when a portable root `plugin.json` is present, even alongside a compatibility manifest.
 
 HUMAN ACTION: When publishing, put this folder's contents at the GitHub repository root, including the hidden `.agents` directory. Do not upload the ZIP as the repository's only file or add an extra enclosing directory.
 
@@ -91,7 +91,7 @@ HUMAN ACTION: When publishing, put this folder's contents at the GitHub reposito
 
 HUMAN ACTION:
 
-1. Put the complete plugin in `plugins/<plugin-name>/`, including its own `plugin.json` and usable skills or tools.
+1. Put the complete plugin in `plugins/<plugin-name>/`, including its own manifest and usable skills or tools. For plugins with hooks, use `.codex-plugin/plugin.json` and omit the portable root `plugin.json` while the Codex hook-loading bug remains. Plugins without hooks can use the portable manifest format.
 2. Add an entry to the existing `plugins` array in `.agents/plugins/marketplace.json`; preserve the other entries and the marketplace name:
 
 ```json
@@ -121,6 +121,14 @@ codex plugin add evidence-first@plugin-marketplace
 ```
 
 Restart the host and review hook trust again if the hook definition changed. If you previously registered the old `evidence-first` marketplace, the new identity is `plugin-marketplace`; avoid enabling both copies of Evidence First.
+
+## Evidence First installed but missing from Hooks
+
+Evidence First 0.1.0 used the portable manifest format. In the tested Codex CLI 0.154.0 runtime, that format silently omits plugin hooks. This is tracked in [Codex issue #47925](https://github.com/openai/codex/issues/47925). Version 0.1.1 uses only `.codex-plugin/plugin.json`; adding it alongside the portable root manifest does not fix the bug.
+
+HUMAN ACTION: Once version 0.1.1 is published, run the two refresh commands above, fully restart the desktop app, and refresh Settings > Hooks. Evidence First should expose SessionStart, UserPromptSubmit, PreToolUse, and SubagentStart. Review and trust them before starting a new local chat. Do not bypass hook trust or manually edit the installed plugin cache.
+
+Hook discovery for 0.1.1 was verified through the installed runtime's `hooks/list` API after a clean local installation. That test lists all four hooks as enabled and untrusted; it does not grant trust or establish execution in your existing desktop chat.
 
 ## Verify source
 

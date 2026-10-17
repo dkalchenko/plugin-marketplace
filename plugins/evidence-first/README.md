@@ -23,6 +23,8 @@ The skill is `skills/evidence-first/SKILL.md`. The hook handler only reads its p
 
 Requires Node.js available as `node` in the host execution environment. No dependencies need installation. Hook commands locate the packaged script using `PLUGIN_ROOT`, including paths containing spaces.
 
+Version 0.1.1 uses `.codex-plugin/plugin.json` without a portable root `plugin.json`. Affected Codex versions silently skip hooks when the portable manifest is present. See the [missing hooks troubleshooting guide](../../README.md#evidence-first-installed-but-missing-from-hooks).
+
 ## Installation
 
 See the [marketplace installation guide](../../README.md) for GitHub HTTPS, private SSH, local installation, and hook trust steps. The install selector is `evidence-first@plugin-marketplace`.

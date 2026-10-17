@@ -17,9 +17,11 @@ for (const plugin of catalog.plugins) {
   assert.ok(folder.startsWith(fs.realpathSync(path.join(root, 'plugins')) + path.sep));
   assert.ok(!folders.has(folder), `Duplicate plugin folder: ${folder}`);
   folders.add(folder);
-  const manifest = JSON.parse(fs.readFileSync(path.join(folder, 'plugin.json'), 'utf8'));
+  const manifestPath = fs.existsSync(path.join(folder, 'plugin.json'))
+    ? path.join(folder, 'plugin.json')
+    : path.join(folder, '.codex-plugin/plugin.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   assert.equal(plugin.name, manifest.name);
-  assert.equal(manifest.$schema, 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json');
   assert.equal(plugin.policy.installation, 'AVAILABLE');
   assert.equal(plugin.policy.authentication, 'ON_INSTALL');
   assert.ok(plugin.category.length > 0);
