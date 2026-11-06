@@ -1,0 +1,3 @@
+interface:
+  display_name: "Git Branch"
+  short_description: "Create a local branch named for the change"

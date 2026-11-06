@@ -1,0 +1,3 @@
+interface:
+  display_name: "Git Commit"
+  short_description: "Review task changes and propose three commit messages"

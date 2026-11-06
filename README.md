@@ -5,11 +5,14 @@ A marketplace for independently installable Codex plugins, prepared for `dkalche
 | Plugin | Purpose | Install selector |
 | --- | --- | --- |
 | [Evidence First](plugins/evidence-first/README.md) | Evidence-backed answers, clarification of missing information, and reminders against guessing | `evidence-first@plugin-marketplace` |
+| Git Repository | [Review and commit task changes](plugins/git-repository/skills/dkalchenko-git-commit/SKILL.md) and [create local branches](plugins/git-repository/skills/dkalchenko-git-branch/SKILL.md) | `git-repository@plugin-marketplace` |
+| GitHub Repository | [Push commits](plugins/github-repository/skills/dkalchenko-github-push/SKILL.md) and [create missing GitHub branches](plugins/github-repository/skills/dkalchenko-github-branch-creation/SKILL.md) with the GitHub CLI | `github-repository@plugin-marketplace` |
 
 ## Requirements
 
 - Codex CLI with `codex plugin marketplace` and `codex plugin add` commands.
 - Git for GitHub installation.
+- An authenticated GitHub CLI (`gh`) for the GitHub Repository skills.
 - Node.js available as `node` for Evidence First's hooks; no npm dependencies are required.
 - For a private repository: Git authentication with access to the repository. Use the SSH option if your access is through SSH.
 
@@ -80,6 +83,14 @@ plugins/
     hooks/
     skills/
     tests/
+  git-repository/
+    plugin.json
+    skills/dkalchenko-git-commit/
+    skills/dkalchenko-git-branch/
+  github-repository/
+    plugin.json
+    skills/dkalchenko-github-push/
+    skills/dkalchenko-github-branch-creation/
 tests/marketplace.test.cjs
 ```
 

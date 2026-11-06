@@ -1,0 +1,3 @@
+interface:
+  display_name: "GitHub Branch Creation"
+  short_description: "Create a GitHub branch only when it is missing"

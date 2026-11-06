@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "github-repository",
+  "version": "0.1.0",
+  "description": "Push local commits to GitHub and create missing remote branches using the GitHub CLI.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "GitHub Repository",
+        "shortDescription": "GitHub pushes and branches",
+        "category": "Developer Tools",
+        "capabilities": ["Instructions"]
+      }
+    }
+  }
+}
