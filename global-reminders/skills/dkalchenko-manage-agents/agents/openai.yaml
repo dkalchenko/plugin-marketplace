@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manage AGENTS Skill Routing"
+  short_description: "Route enabled skills from plugin-marketplace"
+  default_prompt: "Use $dkalchenko-manage-agents to initialize or update AGENTS.md routing for enabled skills from plugin-marketplace plugins."

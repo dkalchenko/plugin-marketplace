@@ -1,0 +1,12 @@
+{
+  "name": "project-architecture",
+  "version": "0.2.0",
+  "description": "Unity file placement, naming, and assembly definition rules.",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Project Architecture",
+    "shortDescription": "Unity files and assemblies",
+    "category": "Developer Tools",
+    "capabilities": ["Instructions"]
+  }
+}

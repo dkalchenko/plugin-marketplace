@@ -1,0 +1,62 @@
+# Rules and examples
+
+These are original illustrative fragments, not complete programs. Project rules override these defaults.
+
+| Rule | Avoid in new code | Prefer |
+| --- | --- | --- |
+| Descriptive names | `int n = 3;` | `int retryCount = 3;` |
+| Types and interfaces | `class order`, `interface repository` | `class Order`, `interface IRepository` |
+| Members and constants | `get_total()`, `MAX_RETRIES` | `GetTotal()`, `MaxRetries` |
+| Parameters and locals | `string CustomerName` | `string customerName` |
+| Instance fields | `private int count;` | `private int _count;` |
+| Static fields | `private static int count;` | `private static int s_count;` |
+| Thread-static fields | `[ThreadStatic] private static int count;` | `[ThreadStatic] private static int t_count;` |
+| Accessibility and modifier order | `readonly private int _limit;` | `private readonly int _limit;` |
+| Keyword types | `Int32 count`, `String name` | `int count`, `string name` |
+| Clear inferred type | `var order = LoadOrder();` | `Order order = LoadOrder();` |
+| Explicit construction | `Order order = new Order();` | `var order = new Order();` or `Order order = new();` |
+| Interpolation | `"Order: " + orderId` | `$"Order: {orderId}"` |
+| Symbol references | `new ArgumentException("Invalid", "orderId")` | `new ArgumentException("Invalid", nameof(orderId))` |
+
+The explicit construction row shows equivalent permitted alternatives, not a requirement to rewrite explicit declarations. Use `readonly` only when reassignment is unnecessary; preserve framework and serialization requirements.
+
+Formatting and braces (the always-braced choice is this skill's adaptation):
+
+```csharp
+// Before
+if(isReady){Save(orderId);}
+
+// After
+if (isReady)
+{
+    Save(orderId);
+}
+```
+
+Imports and namespaces (file-scoped namespaces require C# 10; keep block namespaces where the project uses them):
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Contoso.Orders;
+
+namespace Contoso.Checkout;
+```
+
+Comments should preserve a reason that would otherwise be lost:
+
+```csharp
+// Before: Increase the attempt count.
+// After: Count failed attempts too, so the retry limit remains bounded.
+attemptCount++;
+```
+
+Do not modernize code beyond the configured language version, rename an API or serialized field without checking consumers, or reformat untouched files as a side effect of a focused edit.
+
+## Source and adaptation notes
+
+- [Microsoft Learn: common C# conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) provides the basis for clear type inference, keyword types, interpolation, and comments. Its documentation examples adopt newer language features faster than many applications; this skill keeps the project's compatibility constraints.
+- [Microsoft Learn: identifier naming](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names) provides the naming baseline. Runtime-style field prefixes are conventions, not compiler requirements.
+- [.NET runtime C# style](https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.md) informs layout, imports, accessibility, and respecting surrounding code. This skill does not import runtime-specific performance or inheritance policies. It chooses braces consistently and permits clear inferred types rather than adopting the runtime's narrower `var` policy.
+
+Sources checked on 2026-11-06. These are selected defaults, not an exhaustive copy of any source or a mandate to migrate existing projects.

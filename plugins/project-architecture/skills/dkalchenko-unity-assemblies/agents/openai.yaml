@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity Assemblies"
+  short_description: "Create and update Unity assembly definitions"
+  default_prompt: "Use $dkalchenko-unity-assemblies to decide whether to create or update a Unity assembly and verify its dependencies."

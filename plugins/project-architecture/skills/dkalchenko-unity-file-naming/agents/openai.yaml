@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity File Naming"
+  short_description: "Name Unity scripts, UI files, and assets"
+  default_prompt: "Use $dkalchenko-unity-file-naming to choose or review Unity file names safely."

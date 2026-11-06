@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity Code Architecture"
+  short_description: "Design Unity layers and feature boundaries"
+  default_prompt: "Use $dkalchenko-unity-code-architecture to review or design Unity feature ownership and logical layers."

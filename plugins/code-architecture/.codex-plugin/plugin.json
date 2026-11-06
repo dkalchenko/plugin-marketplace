@@ -1,0 +1,12 @@
+{
+  "name": "code-architecture",
+  "version": "0.2.0",
+  "description": "Unity feature boundaries, logical layers, and dependency reviews.",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Code Architecture",
+    "shortDescription": "Unity layers and feature split",
+    "category": "Developer Tools",
+    "capabilities": ["Instructions"]
+  }
+}

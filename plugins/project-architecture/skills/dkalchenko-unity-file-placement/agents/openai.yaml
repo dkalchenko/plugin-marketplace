@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity File Placement"
+  short_description: "Place Unity files by feature and ownership"
+  default_prompt: "Use $dkalchenko-unity-file-placement to choose or review Unity file destinations."

@@ -1,0 +1,12 @@
+{
+  "name": "code-style",
+  "version": "0.3.0",
+  "description": "Microsoft-based C# conventions that respect project style rules.",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Code Style",
+    "shortDescription": "Microsoft-based C# style",
+    "category": "Developer Tools",
+    "capabilities": ["Instructions"]
+  }
+}

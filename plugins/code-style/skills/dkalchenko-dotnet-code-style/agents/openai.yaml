@@ -1,0 +1,4 @@
+interface:
+  display_name: ".NET Code Style"
+  short_description: "Apply Microsoft-based C# naming and formatting"
+  default_prompt: "Use $dkalchenko-dotnet-code-style to apply or review C# style, respecting this project's conventions."
