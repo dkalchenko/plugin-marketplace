@@ -1,11 +1,11 @@
 {
   "name": "code-architecture",
-  "version": "0.2.0",
-  "description": "Unity feature boundaries, logical layers, and dependency reviews.",
+  "version": "0.3.0",
+  "description": "Design Unity feature boundaries, review dependencies, and remove unused code.",
   "skills": "./skills/",
   "interface": {
     "displayName": "Code Architecture",
-    "shortDescription": "Unity layers and feature split",
+    "shortDescription": "Feature design and cleanup",
     "category": "Developer Tools",
     "capabilities": ["Instructions"]
   }

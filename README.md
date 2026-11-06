@@ -4,15 +4,15 @@ A marketplace for independently installable Codex plugins, prepared for `dkalche
 
 | Plugin | Purpose | Install selector |
 | --- | --- | --- |
-| [Code Architecture](plugins/code-architecture/skills/dkalchenko-unity-code-architecture/SKILL.md) | Unity feature ownership, logical layers, and dependency direction | `code-architecture@plugin-marketplace` |
-| Project Architecture | Unity [file placement](plugins/project-architecture/skills/dkalchenko-unity-file-placement/SKILL.md), [file naming](plugins/project-architecture/skills/dkalchenko-unity-file-naming/SKILL.md), and [assemblies](plugins/project-architecture/skills/dkalchenko-unity-assemblies/SKILL.md) | `project-architecture@plugin-marketplace` |
+| Code Architecture | [Unity feature boundaries and dependencies](plugins/code-architecture/skills/dkalchenko-unity-code-architecture/SKILL.md) and [stale code removal](plugins/code-architecture/skills/dkalchenko-stale-code-removal/SKILL.md) | `code-architecture@plugin-marketplace` |
+| Project Architecture | Unity [file placement](plugins/project-architecture/skills/dkalchenko-unity-file-placement/SKILL.md), [file naming](plugins/project-architecture/skills/dkalchenko-unity-file-naming/SKILL.md), [assemblies](plugins/project-architecture/skills/dkalchenko-unity-assemblies/SKILL.md), and [stale file removal](plugins/project-architecture/skills/dkalchenko-unity-stale-files/SKILL.md) | `project-architecture@plugin-marketplace` |
 | [Code Style](plugins/code-style/skills/dkalchenko-dotnet-code-style/SKILL.md) | Microsoft-based C# conventions | `code-style@plugin-marketplace` |
 | Git Repository | [Review and commit task changes](plugins/git-repository/skills/dkalchenko-git-commit/SKILL.md) and [create local branches](plugins/git-repository/skills/dkalchenko-git-branch/SKILL.md) | `git-repository@plugin-marketplace` |
 | GitHub Repository | [Push commits](plugins/github-repository/skills/dkalchenko-github-push/SKILL.md) and [create missing GitHub branches](plugins/github-repository/skills/dkalchenko-github-branch-creation/SKILL.md) with the GitHub CLI | `github-repository@plugin-marketplace` |
 
 Code Style contains `$dkalchenko-dotnet-code-style` for C# conventions. See its [rules and examples](plugins/code-style/skills/dkalchenko-dotnet-code-style/references/rules-and-examples.md). Install with `codex plugin add code-style@plugin-marketplace` after registering this marketplace. Version 0.3.0 moves generic AGENTS routing out of this plugin and removes its reminder hooks; `$dotnet-code-style` was previously renamed to `$dkalchenko-dotnet-code-style`.
 
-Code Architecture exposes `$dkalchenko-unity-code-architecture`. Project Architecture exposes `$dkalchenko-unity-file-placement`, `$dkalchenko-unity-file-naming`, and `$dkalchenko-unity-assemblies`. Install each plugin separately using its selector above. When enabled, the user-level AGENTS reminders guide skill selection.
+Code Architecture exposes `$dkalchenko-unity-code-architecture` and `$dkalchenko-stale-code-removal`. Project Architecture exposes `$dkalchenko-unity-file-placement`, `$dkalchenko-unity-file-naming`, `$dkalchenko-unity-assemblies`, and `$dkalchenko-unity-stale-files`. Install each plugin separately using its selector above. When enabled, the user-level AGENTS reminders guide skill selection.
 
 ## User-level skill reminders
 
@@ -102,11 +102,13 @@ plugins/
   code-architecture/
     .codex-plugin/plugin.json
     skills/dkalchenko-unity-code-architecture/
+    skills/dkalchenko-stale-code-removal/
   project-architecture/
     .codex-plugin/plugin.json
     skills/dkalchenko-unity-file-placement/
     skills/dkalchenko-unity-file-naming/
     skills/dkalchenko-unity-assemblies/
+    skills/dkalchenko-unity-stale-files/
   code-style/
     .codex-plugin/plugin.json
     skills/dkalchenko-dotnet-code-style/

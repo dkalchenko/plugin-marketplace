@@ -1,0 +1,3 @@
+interface:
+  display_name: "Unity Stale Files"
+  short_description: "Find and remove unused Unity project files"

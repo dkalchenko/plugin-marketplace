@@ -1,0 +1,3 @@
+interface:
+  display_name: "Stale Code Removal"
+  short_description: "Find and remove code that has lost its last consumer"
