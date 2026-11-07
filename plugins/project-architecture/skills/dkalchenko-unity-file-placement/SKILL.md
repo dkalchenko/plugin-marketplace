@@ -19,9 +19,9 @@ Use `Assets/_Game/` as this marketplace's authored-content convention; it is not
 
 Apply the same mapping to every source area, including Bootstrap and files directly under `_Game/`. Placeholders are not literal directories. Do not flatten paths, insert an `EditMode/` or `PlayMode/` prefix, or put tests beside production files.
 
-Keep fixtures, helpers, test-only assets, and test assembly definitions/references under this root. Shared test support belongs at its consumers' narrowest common test directory. Integration tests mirror the common owning source directory and use `<BehaviorName>Tests.cs`.
+Keep fixtures, helpers, and test-only assets under this root. Place exactly one test `.asmdef` directly in `Assets/_Game/Tests/`; all tests and test helpers in its subtree use this [single shared assembly](../dkalchenko-unity-assemblies/SKILL.md#single-test-assembly). Do not add nested test definitions or redirect tests to other assemblies. Shared test support belongs at its consumers' narrowest common test directory. Integration tests mirror the common owning source directory and use `<BehaviorName>Tests.cs`.
 
-Editor-dependent tests follow the same mapping and need Editor-only test assemblies. Execution mode does not change their location. `Tests/Editor/` is the sole exception to the Editor-folder restriction below: it mirrors production tooling and must contain only tests and test support.
+Editor-dependent tests follow the same mapping and stay in the shared test assembly, making that assembly Editor-only. Execution mode does not change test locations or create another assembly. `Tests/Editor/` is the sole exception to the Editor-folder restriction below: it mirrors production tooling and must contain only tests and test support.
 
 ## Editor code
 

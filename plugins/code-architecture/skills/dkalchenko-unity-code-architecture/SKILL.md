@@ -8,7 +8,7 @@ description: Design and review Unity C# feature boundaries, logical layers, and 
 ## Feature ownership
 
 - Assign behavior and mutable state to the feature that controls their lifecycle. Keep its rules, presentation, configuration, and runtime Unity integration together.
-- Tests retain their feature's logical ownership but live under `Assets/_Game/Tests/`, mirroring the source path relative to `_Game/` and using `<SourceName>Tests.cs`. This includes Editor-dependent tests, which need Editor-only test assemblies.
+- Tests retain their feature's logical ownership but live under `Assets/_Game/Tests/`, mirroring the source path relative to `_Game/` and using `<SourceName>Tests.cs`. All tests and test helpers share exactly one test assembly defined by a single `.asmdef` at that root; do not split it by feature or subfolder. Editor-dependent tests make the shared assembly Editor-only.
 - Trace callers and serialized dependencies before extracting shared code. Promote a responsibility to a named shared system when multiple features use it.
 - Expose cross-feature behavior through a typed reference, a small contract, or an event. Keep view internals private to their owner. Check for dependency cycles and scene initialization order.
 
