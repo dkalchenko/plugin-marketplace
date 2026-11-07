@@ -7,6 +7,7 @@ description: Choose or review names for Unity script files, UI Toolkit companion
 
 - Follow the naming conventions in the owning directory. For new authored feature and component folders and C# file stems, default to descriptive PascalCase.
 - Give a C# file the name of its principal type. Keep MonoBehaviour and ScriptableObject script names aligned with their types. Closely related helper types may share the principal type's file.
+- Name a source-focused test file and its principal test type `<SourceName>Tests`, with the `.cs` extension on the file. For integration tests spanning multiple source files, use `<BehaviorName>Tests` in the mirrored common owning directory. Place ALL tests under `Assets/_Game/Tests/`, mirroring source directories relative to `Assets/_Game/`. Preserve that mapping when renaming or moving source files; never put tests beside production code.
 - Give a UI component's folder, C# binding, UXML layout, and USS stylesheet the same stem. Preserve extension casing. Name independently reusable themes and panel settings by their own roles.
 - Add a role suffix only when it describes the file's responsibility. Use terms such as `Controller` for coordination, `Catalog` for a collection of authored definitions, and `Builder` for authoring automation.
 - Name scenes and authored assets by purpose or content. Distinguish variants with meaningful qualifiers. Follow established naming families for platform settings, prefixes, and separators.
