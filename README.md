@@ -1,178 +1,111 @@
 # Plugin Marketplace
 
-A marketplace for independently installable Codex plugins, prepared for `dkalchenko/plugin-marketplace` on GitHub. Adding the marketplace does not install every plugin: install each plugin you want separately.
+Independently installable Codex plugins for `dkalchenko/plugin-marketplace`. Registering the marketplace makes plugins discoverable; install the ones you want.
 
-| Plugin | Purpose | Install selector |
+| Plugin | Skills | Install selector |
 | --- | --- | --- |
-| Code Architecture | [Unity feature boundaries and dependencies](plugins/code-architecture/skills/dkalchenko-unity-code-architecture/SKILL.md) and [stale code removal](plugins/code-architecture/skills/dkalchenko-stale-code-removal/SKILL.md) | `code-architecture@plugin-marketplace` |
-| Project Architecture | Unity [file placement](plugins/project-architecture/skills/dkalchenko-unity-file-placement/SKILL.md), [file naming](plugins/project-architecture/skills/dkalchenko-unity-file-naming/SKILL.md), [assemblies](plugins/project-architecture/skills/dkalchenko-unity-assemblies/SKILL.md), and [stale file removal](plugins/project-architecture/skills/dkalchenko-unity-stale-files/SKILL.md) | `project-architecture@plugin-marketplace` |
-| [Code Style](plugins/code-style/skills/dkalchenko-dotnet-code-style/SKILL.md) | Microsoft-based C# conventions | `code-style@plugin-marketplace` |
-| Git Repository | [Review and commit task changes](plugins/git-repository/skills/dkalchenko-git-commit/SKILL.md), [create local branches](plugins/git-repository/skills/dkalchenko-git-branch/SKILL.md), and [push existing commits with Git](plugins/git-repository/skills/dkalchenko-git-push/SKILL.md) | `git-repository@plugin-marketplace` |
-| User Prompt Handling | [Confirm coding requests and discuss proposed corrections](plugins/user-prompt-handling/skills/dkalchenko-code-generating-prompt-handling/SKILL.md) before implementation | `user-prompt-handling@plugin-marketplace` |
+| Code Architecture | [Unity feature boundaries](plugins/code-architecture/skills/dkalchenko-unity-code-architecture/SKILL.md), [stale code removal](plugins/code-architecture/skills/dkalchenko-stale-code-removal/SKILL.md) | `code-architecture@plugin-marketplace` |
+| Project Architecture | Unity [file placement](plugins/project-architecture/skills/dkalchenko-unity-file-placement/SKILL.md), [file naming](plugins/project-architecture/skills/dkalchenko-unity-file-naming/SKILL.md), [assemblies](plugins/project-architecture/skills/dkalchenko-unity-assemblies/SKILL.md), [stale file removal](plugins/project-architecture/skills/dkalchenko-unity-stale-files/SKILL.md) | `project-architecture@plugin-marketplace` |
+| Code Style | [C# naming and formatting](plugins/code-style/skills/dkalchenko-dotnet-code-style/SKILL.md), with project conventions taking precedence | `code-style@plugin-marketplace` |
+| Git Repository | [Commit task changes](plugins/git-repository/skills/dkalchenko-git-commit/SKILL.md), [create local branches](plugins/git-repository/skills/dkalchenko-git-branch/SKILL.md), [push existing commits](plugins/git-repository/skills/dkalchenko-git-push/SKILL.md) | `git-repository@plugin-marketplace` |
+| User Prompt Handling | [Confirm coding intent and review proposed corrections](plugins/user-prompt-handling/skills/dkalchenko-code-generating-prompt-handling/SKILL.md) before implementation | `user-prompt-handling@plugin-marketplace` |
 
-Code Style contains `$dkalchenko-dotnet-code-style` for C# conventions. See its [rules and examples](plugins/code-style/skills/dkalchenko-dotnet-code-style/references/rules-and-examples.md). Install with `codex plugin add code-style@plugin-marketplace` after registering this marketplace. Version 0.3.0 moves generic AGENTS routing out of this plugin and removes its reminder hooks; `$dotnet-code-style` was previously renamed to `$dkalchenko-dotnet-code-style`.
+Code Architecture owns logical responsibilities; Project Architecture owns file and assembly organization. Their cleanup skills address different evidence: symbol reachability versus whole-file and Unity asset references. Plugins remain independently installable.
 
-Code Architecture exposes `$dkalchenko-unity-code-architecture` and `$dkalchenko-stale-code-removal`. Project Architecture exposes `$dkalchenko-unity-file-placement`, `$dkalchenko-unity-file-naming`, `$dkalchenko-unity-assemblies`, and `$dkalchenko-unity-stale-files`. Install each plugin separately using its selector above. When enabled, the user-level AGENTS reminders guide skill selection.
+## Install or refresh
 
-Git Repository exposes `$dkalchenko-git-commit`, `$dkalchenko-git-branch`, and `$dkalchenko-git-push`. Pushes use Git's configured remotes and authentication to publish already committed changes.
+Requirements: a Codex CLI supporting `codex plugin marketplace` and `codex plugin add`, plus Git with access to the repository. Node.js is needed for source validation and optional reminders; the reminder installer requires PowerShell 7.
 
-User Prompt Handling exposes `$dkalchenko-code-generating-prompt-handling`. It repeats the interpretation and correction loop until the user confirms Yes, then reviews the planned code for concrete security, complexity, simplification, or alternative-approach concerns. Proposed corrections offer Accept correction, Proceed with user's prompt, and free-text input through the host's question interface.
-
-## User-level skill reminders
-
-The generic reminders are user-level hooks, independent of every plugin. The [installer](global-reminders/install.ps1) copies the hook script and language-neutral [$dkalchenko-manage-agents](global-reminders/skills/dkalchenko-manage-agents/SKILL.md) into your Codex home and merges four events into `hooks.json`, preserving unrelated hooks and backing up existing JSON. It does not grant hook trust. Adding this marketplace alone does not install these global files.
-
-HUMAN ACTION: From the repository root in PowerShell 7:
-
-```powershell
-./global-reminders/install.ps1
-```
-
-The installer uses `CODEX_HOME`, or `~/.codex` when unset. `-TargetCodexHome <directory>` can prepare a different home; launch Codex with `CODEX_HOME` pointing there. Restart Codex and review/trust the SessionStart, UserPromptSubmit, PreToolUse, and SubagentStart user-level hooks. If you previously installed Code Style 0.2.0, refresh the marketplace and reinstall Code Style 0.3.0 to remove the old plugin reminders and avoid duplicate runs.
-
-The hooks remind the AI to read applicable `AGENTS.md` and select skills for the task. With an absolute workspace `cwd`, they inspect it and its ancestors for recorded routing decisions; the AI still checks more specific instructions for target files and existing unmarked routing. Without a requirement or decision, the AI asks whether to add routing only for enabled skills supplied by plugins from `plugin-marketplace`. Acceptance records mappings; refusal records an explicit decline to prevent repeated prompts. A refusal to write the file is honored. Hooks never edit `AGENTS.md` or enumerate enabled skills themselves. The AI uses the host inventory and reports limitations. Invoke `$dkalchenko-manage-agents` directly to initialize or reconcile routing. No provider receives automatic priority.
-
-After acceptance, the AI synchronizes the managed inventory at session start and before a new user prompt: newly enabled skills from this marketplace are added and confirmed disabled or uninstalled skills are removed. Older managed tables are narrowed by removing confirmed entries from other marketplaces and standalone skills, including the user-level setup skill. Handwritten instructions outside the managed block are preserved. Unchanged inventories cause no edits. Partial or stale session inventories do not authorize removing entries; a settings change takes effect in this workflow after the host exposes the updated inventory. This is AI-assisted synchronization, not a background settings watcher. Declined setups and unrelated handwritten instructions remain untouched.
-
-User-level hooks are documented in [Codex hooks](https://learn.chatgpt.com/docs/hooks); multiple hook sources run together. These local reminders depend on Node.js, active user configuration, and hook trust, and do not apply to cloud environments that cannot execute them.
-
-## Requirements
-
-- Codex CLI with `codex plugin marketplace` and `codex plugin add` commands.
-- Git for repository workflows and GitHub installation.
-- Node.js available as `node` for user-level reminder hooks; no npm dependencies are required.
-- For a private repository: Git authentication with access to the repository. Use the SSH option if your access is through SSH.
-
-## Install from GitHub
-
-These commands require the repository contents to have been published first. This refactor does not create or publish the GitHub repository.
-
-### 1. Register the marketplace
-
-HUMAN ACTION: Choose one command based on your Git access.
-
-For HTTPS (public repository, or private repository with working HTTPS credentials):
+Register the published marketplace using HTTPS:
 
 ```powershell
 codex plugin marketplace add dkalchenko/plugin-marketplace
 ```
 
-The `owner/repo` shorthand resolves to `https://github.com/dkalchenko/plugin-marketplace.git`, unless your Git configuration rewrites that URL.
-
-For private SSH access:
+Or use SSH:
 
 ```powershell
 codex plugin marketplace add "ssh://git@github.com/dkalchenko/plugin-marketplace.git"
 ```
 
-### 2. Install Code Style
-
-HUMAN ACTION:
-
-```powershell
-codex plugin add code-style@plugin-marketplace
-```
-
-For optional user-level reminders, follow the setup above.
-
-## Install locally before publishing
-
-HUMAN ACTION: From this marketplace directory, run:
+For local development, register the checkout instead, from its root:
 
 ```powershell
 codex plugin marketplace add .
-codex plugin add code-style@plugin-marketplace
 ```
 
-For optional user-level reminders, follow the setup above. If using the repository ZIP, extract it first and open your terminal inside its `plugin-marketplace` folder.
+Install a plugin using its selector from the table, for example:
 
-## Use in ChatGPT desktop
+```powershell
+codex plugin add git-repository@plugin-marketplace
+```
 
-HUMAN ACTION: In a supported desktop Work/Codex environment, restart the app after registering the marketplace. Open the Plugins Directory, select **Dkalchenko Plugin Marketplace**, and install or enable **Code Style** if needed. User-level reminders are configured separately using the setup above.
+After published changes, refresh the marketplace and the installed plugin:
 
-This GitHub/local marketplace is separate from the public ChatGPT plugin directory. Installing a plugin on the web does not deploy local hook scripts. Hook coverage depends on the local host; reminders cannot guarantee truthful answers or prevent every unsupported action.
+```powershell
+codex plugin marketplace upgrade plugin-marketplace
+codex plugin add git-repository@plugin-marketplace
+```
+
+Refresh or restart the Codex host to load updated plugins. Editing marketplace source alone does not update installed copies. This local Codex marketplace is separate from the public ChatGPT plugin directory.
+
+## Optional AGENTS routing reminders
+
+The [installer](global-reminders/install.ps1) copies the reminder hook and [routing helper](global-reminders/skills/dkalchenko-manage-agents/SKILL.md) into the user's Codex home. It merges SessionStart, UserPromptSubmit, PreToolUse, and SubagentStart events into `hooks.json`, preserving unrelated hooks and backing up existing configuration. It does not grant hook trust.
+
+Run from the repository root in PowerShell 7:
+
+```powershell
+./global-reminders/install.ps1
+```
+
+The installer uses `CODEX_HOME`, or `~/.codex` when unset. For another home, use `-TargetCodexHome <directory>` and launch Codex with the same `CODEX_HOME`. Restart Codex and review/trust the four hooks. Rerun the installer after changing the user-level hook or helper source.
+
+The hooks inspect workspace/ancestor `AGENTS.md` decisions and remind the assistant to check more specific instructions. They do not edit routing or enumerate enabled skills. The helper:
+
+- Asks once before first-time setup and records acceptance or the disclosed decline.
+- After acceptance, synchronizes the managed block at session start and before new prompts, using verified enabled skills from this marketplace only.
+- Preserves handwritten instructions, skips unchanged writes, and never treats a partial or stale inventory as evidence of disablement.
+- Honors refusals to write `AGENTS.md`; those cannot persist to later chats without a file.
+
+Invoke `$dkalchenko-manage-agents` to reconcile routing explicitly. Installed plugin folders and the source catalog are not proof of enablement; new skills enter routing only after the host exposes them. Hooks require Node.js and a host that executes and trusts them. Neither hooks nor skill instructions guarantee model compliance.
 
 ## Repository layout
 
 ```text
 .agents/plugins/marketplace.json
+AGENTS.md
 README.md
+plugins/
+  <plugin>/
+    plugin.json                      # Or the existing .codex-plugin/plugin.json
+    skills/<skill>/
+      SKILL.md
+      agents/openai.yaml
+      references/                    # Only when supporting detail is useful
 global-reminders/
   install.ps1
   hooks/remind.cjs
   skills/dkalchenko-manage-agents/
-plugins/
-  code-architecture/
-    .codex-plugin/plugin.json
-    skills/dkalchenko-unity-code-architecture/
-    skills/dkalchenko-stale-code-removal/
-  project-architecture/
-    .codex-plugin/plugin.json
-    skills/dkalchenko-unity-file-placement/
-    skills/dkalchenko-unity-file-naming/
-    skills/dkalchenko-unity-assemblies/
-    skills/dkalchenko-unity-stale-files/
-  code-style/
-    .codex-plugin/plugin.json
-    skills/dkalchenko-dotnet-code-style/
-  git-repository/
-    plugin.json
-    skills/dkalchenko-git-commit/
-    skills/dkalchenko-git-branch/
-    skills/dkalchenko-git-push/
-  user-prompt-handling/
-    plugin.json
-    skills/dkalchenko-code-generating-prompt-handling/
 tests/marketplace.test.cjs
 ```
 
-The marketplace has no root `plugin.json`. Each plugin owns its manifest, skills, hooks, and version. Catalog paths resolve from the repository root.
+Each plugin owns its manifest, version, and skills. There is no root `plugin.json`; catalog paths resolve from the repository root. Keep skill references inside their supplying plugin so installations remain self-contained.
 
-HUMAN ACTION: When publishing, put this folder's contents at the GitHub repository root, including the hidden `.agents` directory. Do not upload the ZIP as the repository's only file or add an extra enclosing directory.
+## Add a plugin
 
-## Add another plugin
+1. Add `plugins/<name>/plugin.json` and usable skills or tools. Use the portable Agent Plugins manifest for a new skills-only plugin; preserve an existing compatibility manifest unless a migration is needed.
+2. Add a unique entry to `.agents/plugins/marketplace.json` with the matching name, local source `./plugins/<name>`, installation policy `AVAILABLE`, authentication policy `ON_INSTALL`, and an appropriate category.
+3. Validate the source, publish through the repository's normal workflow, then refresh and install using `<name>@plugin-marketplace`.
 
-HUMAN ACTION:
+Keep names and existing skill invocation policies stable during ordinary edits. Bump only the versions of plugins whose packaged content changes.
 
-1. Put the complete plugin in `plugins/<plugin-name>/`, including its own manifest and usable skills or tools. For plugins with hooks, use `.codex-plugin/plugin.json` and omit the portable root `plugin.json` while the Codex hook-loading bug remains. Plugins without hooks can use the portable manifest format.
-2. Add an entry to the existing `plugins` array in `.agents/plugins/marketplace.json`; preserve the other entries and the marketplace name:
-
-```json
-{
-  "name": "your-plugin-name",
-  "source": {
-    "source": "local",
-    "path": "./plugins/your-plugin-name"
-  },
-  "policy": {
-    "installation": "AVAILABLE",
-    "authentication": "ON_INSTALL"
-  },
-  "category": "Productivity"
-}
-```
-
-3. Match the entry name to the plugin manifest name and use a unique folder and name. Install it with `codex plugin add your-plugin-name@plugin-marketplace` after publishing and refreshing the catalog.
-
-## Refresh after published changes
-
-HUMAN ACTION:
-
-```powershell
-codex plugin marketplace upgrade plugin-marketplace
-codex plugin add code-style@plugin-marketplace
-```
-
-Restart the host after refreshing installed plugins. Review hook trust again if hook definitions changed.
-
-## Verify source
-
-HUMAN ACTION: From the repository root:
+## Validate source
 
 ```powershell
 node tests/marketplace.test.cjs
 ```
 
-This checks catalog paths, names, and plugin manifests. It does not verify GitHub credentials, live installation, hook trust, or model behavior. Verify optional user-level reminders separately in the host's hook review flow.
+This checks catalog identity, unique entries, paths, and manifest names. Also check edited skill metadata and relative links. Source checks do not verify installation, hook trust, credentials, or interactive model behavior.
 
-References: [OpenAI plugin packaging and marketplaces](https://developers.openai.com/plugins/build/plugins), [hook trust and coverage](https://learn.chatgpt.com/docs/hooks).
+References: [plugin packaging and marketplaces](https://developers.openai.com/plugins/build/plugins), [Codex hooks](https://learn.chatgpt.com/docs/hooks).

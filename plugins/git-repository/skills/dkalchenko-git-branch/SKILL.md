@@ -5,7 +5,7 @@ description: Use Git to name and create a local branch when the user wants a bra
 
 # Git branch
 
-Use an explicitly requested name. When choosing one, describe the change in short, lowercase, hyphen-separated words after one of these prefixes. A breaking change takes precedence over the other categories.
+Use an explicitly requested name. Otherwise respect required repository or host prefixes and describe the change in lowercase, hyphen-separated words using the categories below. A required prefix comes before the category, for example `codex/feature/add-offline-mode`. A breaking change takes precedence over the other categories.
 
 | Change | Branch name example |
 | --- | --- |

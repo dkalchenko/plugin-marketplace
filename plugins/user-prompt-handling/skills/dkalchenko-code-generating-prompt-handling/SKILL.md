@@ -1,65 +1,48 @@
 ---
 name: dkalchenko-code-generating-prompt-handling
-description: Confirm and refine the interpretation of a user request to generate, implement, modify, or refactor code, then review the proposed approach for concrete improvements before execution.
+description: Confirm coding intent and resolve proposed security or design corrections before generating, modifying, or refactoring code.
 ---
 
 # Code-generating prompt handling
 
-Use this workflow for requests that will generate or change code. Explain the intended outcome in plain language and preserve the user's constraints throughout the conversation. Questions that only ask for an explanation, or requests to describe or edit this skill's instructions, do not start this confirmation loop by themselves. Follow explicit user directions that supersede this workflow and applicable higher-priority instructions.
+Apply to requests that will generate or change code. Explanation-only requests and edits to these instructions do not trigger the loop by themselves. Honor explicit user directions that supersede this workflow.
 
-## Ask through the host's question interface
+## Question interface
 
-Prefer an available question tool that provides selectable options and free-text input, such as `request_user_input_async`. Use mode-restricted question tools only when the current mode supports them. If the host already supplies a free-text field or an automatic Other choice, do not add a duplicate option. If no suitable question interface is available, present the same choices in text and invite a written answer.
+Use a host question tool with selectable options and free-text input, such as `request_user_input_async`. Respect tool mode restrictions and do not duplicate a built-in Other/free-text field. If no suitable UI exists, present the same options in text and accept a written answer.
 
-Wait for the user's submitted response. A preselected first option, silence, a timeout, or an unanswered question is not confirmation. Read-only inspection needed to understand the request may continue, but do not generate the requested code or make implementation changes while a required answer is pending.
+A required answer must be submitted: preselection, silence, and timeouts are not confirmation. Read-only investigation may continue while waiting; code generation and implementation changes must wait.
 
 ## 1. Confirm the interpretation
 
-1. Read the prompt and relevant conversation context. Inspect applicable project instructions and existing code as needed to understand the request. Identify the desired behavior, scope, constraints, and material assumptions without adding requirements of your own.
-2. Briefly explain the current interpretation to the user. State what will change and the expected result, including any assumptions that affect the implementation.
-3. Ask whether the interpretation is correct, with these two choices in this order:
-   - **Yes**
-   - **Correct the interpretation**
-   Keep the free-text field available for the user's correction.
-4. If the user selects **Yes**, or explicitly replies Yes to the current interpretation without changing its requirements, proceed to the critical review below and then execute the agreed prompt when that review is resolved.
-5. If the user selects **Correct the interpretation** or provides a correction in free text, incorporate it and regenerate the explanation of the complete request. Preserve earlier corrections and unchanged requirements. Present the same **Yes** / **Correct the interpretation** choices again.
-6. If the user selects the correction option without supplying details, ask what needs correcting and wait. Do not invent a correction. A reply that both agrees and changes requirements still needs an updated interpretation and confirmation.
-7. Repeat this loop until the user explicitly chooses **Yes** for the latest interpretation. If the user cancels, stop; do not treat cancellation as confirmation.
+Summarize the requested behavior, scope, constraints, and material assumptions using the prompt, conversation, and relevant project context. Ask with these options, in order:
 
-Keep the confirmed interpretation as the basis for the implementation. Do not ask the user to reconfirm it on every tool call or routine implementation step.
+1. **Yes**
+2. **Correct the interpretation**
 
-## 2. Critically review the planned code
+Only Yes to the current summary advances to the critical review. An explicit written Yes counts if it changes no requirements.
 
-Before generating or changing code, evaluate whether the confirmed approach has a concrete problem or a useful alternative. Consider:
+For a correction, incorporate it with all earlier agreed requirements, restate the complete interpretation, and repeat the same choices until Yes. If the user selects correction without details, request those details first. Agreement combined with changed requirements also needs a revised summary. Cancellation stops the task.
 
-- Security gaps, such as missing authorization, unsafe handling of input, or exposure of secrets.
-- Overengineering, such as abstractions, dependencies, or layers that do not serve the requested behavior.
-- Opportunities to simplify duplicated logic, unnecessary state, or an overly complicated implementation.
-- Alternative approaches that improve correctness, maintainability, performance, or compatibility for this request.
+## 2. Review the planned code
 
-Ground concerns in the prompt and available project evidence. Distinguish a demonstrated problem from an assumption. Do not invent an objection, expand the scope, or present a generic checklist just to create another approval step. If there is no concrete correction to recommend, execute the confirmed prompt.
+Check for concrete security gaps, overengineering, duplicated or unnecessarily complex logic, and better approaches to correctness, maintainability, performance, or compatibility. Base findings on available evidence and identify material assumptions.
 
-When a correction is warranted, explain the concern, its practical effect, the proposed change, and any relevant tradeoff. Make the proposal concrete enough for the user to choose. Group related corrections into one clear proposal; do not silently include unrelated changes.
+If there is no useful correction, execute the confirmed request. Otherwise explain the concern, practical effect, proposed change, and tradeoff. Group related changes into a reviewable proposal without inventing objections or adding unrelated scope.
 
-Present these choices in this order, with a free-text input field alongside them:
+Offer these choices, in order, with free-text input:
 
-- **Accept correction**
-- **Proceed with user's prompt**
+1. **Accept correction**
+2. **Proceed with user's prompt**
 
-Handle the response as follows:
-
-| Response | Action |
+| Answer | Next action |
 | --- | --- |
-| Accept correction | Apply the described correction to the confirmed approach and execute it. Acceptance authorizes that specific proposal; do not ask for the same approval again. |
-| Proceed with user's prompt | Execute the previously confirmed prompt without the proposed correction. Preserve the user's choice; do not repeatedly present the rejected correction unless materially new evidence appears. |
-| Custom text that changes or clarifies the request | Incorporate the answer, return to the interpretation loop with a revised explanation, and obtain Yes for the updated request. Then review the revised approach before execution. |
-| Custom text that unambiguously accepts one of the displayed choices | Handle it as that choice. |
-| Missing or ambiguous answer | Ask for the missing decision and wait; do not select an option for the user. |
+| Accept correction | Execute the confirmed request with the described correction. Do not ask for that approval again. |
+| Proceed with user's prompt | Execute the confirmed request without the correction. Do not repeat a rejected proposal without materially new evidence. |
+| Custom changes or clarification | Return to step 1 with the revised interpretation, obtain Yes, then review the updated approach. |
+| Unambiguous written selection | Treat it as the corresponding option. |
+| Missing or ambiguous decision | Ask for the missing answer and wait. |
 
-Accepting a correction or proceeding with the original prompt does not override higher-priority safety requirements or required permissions. If either prevents execution, explain the specific constraint and offer a permissible alternative.
+Neither choice overrides required permissions or higher-priority safety constraints. Explain any actual blocker and offer a permissible alternative.
 
-## Execute the resolved request
-
-Once the interpretation is confirmed and any proposed correction is resolved, carry out the agreed work. Keep the confirmed scope and decisions throughout implementation. If new information materially changes the intended behavior or scope, explain the change and return to the relevant decision step; routine implementation details do not restart the loop.
-
-In the final answer, describe the result, relevant validation, and any remaining limitations. Mention accepted corrections when they explain the resulting behavior.
+Continue with the resolved scope. Reopen the relevant decision only when new evidence materially changes it; routine implementation steps do not restart either loop.

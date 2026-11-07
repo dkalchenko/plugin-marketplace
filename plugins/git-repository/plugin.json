@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "git-repository",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Review and commit scoped changes, create local branches, and push existing commits with Git.",
   "extensions": {
     "com.openai": {

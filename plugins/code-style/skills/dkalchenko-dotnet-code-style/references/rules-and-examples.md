@@ -51,8 +51,6 @@ Comments should preserve a reason that would otherwise be lost:
 attemptCount++;
 ```
 
-Do not modernize code beyond the configured language version, rename an API or serialized field without checking consumers, or reformat untouched files as a side effect of a focused edit.
-
 ## Source and adaptation notes
 
 - [Microsoft Learn: common C# conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) provides the basis for clear type inference, keyword types, interpolation, and comments. Its documentation examples adopt newer language features faster than many applications; this skill keeps the project's compatibility constraints.

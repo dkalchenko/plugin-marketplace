@@ -1,6 +1,6 @@
 {
   "name": "project-architecture",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Organize Unity files and assemblies, apply naming rules, and remove unused project files.",
   "skills": "./skills/",
   "interface": {

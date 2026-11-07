@@ -5,10 +5,10 @@ description: Identify and remove dead code when a change replaces an implementat
 
 # Stale code removal
 
-Before finishing a change that removes or replaces a code path, check what it used to call. Follow that chain through private helpers, fields, and types that may have lost their last consumer. Keep the cleanup within the affected feature unless the user requests a wider sweep.
+Check symbols that lose consumers after a code path is removed or replaced: private helpers, fields, and types. Follow their dependencies within the affected feature; reserve a project-wide cleanup for an explicit request. This skill covers code reachability, not a general asset cleanup.
 
 Search project-wide for references, including tests, tooling, and supported build configurations. Check how the project invokes code indirectly. In Unity, a scene or prefab can reference a script by its `.meta` GUID, a serialized UnityEvent can name a method, and the engine calls lifecycle methods such as `OnEnable`. Preserve public contracts used by external callers.
 
-If current or planned use is unclear, ask the user whether to keep or delete the code. Name the symbol, summarize what you checked, and explain the uncertainty. Keep it in place until the user confirms deletion.
+Retain code when a concrete consumer, external contract, or known planned use remains unresolved. Name the symbol and the missing evidence; ask for a decision only if it is needed to finish the requested cleanup. Do not ask about hypothetical future uses of otherwise confirmed dead code.
 
-Remove confirmed dead code and any dependencies made redundant by its removal. Build and run the relevant existing checks, including the affected scene or runtime path when bindings are involved.
+Remove confirmed dead code and dependencies made redundant by its removal. Deleting an entire Unity script also requires checking asset references and removing its matching `.meta` file. Build and run relevant existing checks, including affected scene or runtime bindings.

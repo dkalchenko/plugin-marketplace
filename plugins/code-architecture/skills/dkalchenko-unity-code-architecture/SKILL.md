@@ -7,8 +7,8 @@ description: Design and review Unity C# feature boundaries, logical layers, and 
 
 ## Feature ownership
 
-- Assign behavior and mutable state to the feature that controls their lifecycle. Keep that feature's rules, presentation, configuration, and Unity integration together.
-- Feature ownership does not colocate tests with production code. ALL tests belong under `Assets/_Game/Tests/`, mirroring the tested file's directory path relative to `Assets/_Game/` and using `<SourceName>Tests.cs`. For example, `Features/<FeatureName>/<NestedPath>/<SourceName>.cs` maps to `Tests/Features/<FeatureName>/<NestedPath>/<SourceName>Tests.cs`; use the same mapping for shared code, bootstrap code, and Editor tooling. Editor-dependent tests remain under `Tests/` in suitable Editor-only test assemblies.
+- Assign behavior and mutable state to the feature that controls their lifecycle. Keep its rules, presentation, configuration, and runtime Unity integration together.
+- Tests retain their feature's logical ownership but live under `Assets/_Game/Tests/`, mirroring the source path relative to `_Game/` and using `<SourceName>Tests.cs`. This includes Editor-dependent tests, which need Editor-only test assemblies.
 - Trace callers and serialized dependencies before extracting shared code. Promote a responsibility to a named shared system when multiple features use it.
 - Expose cross-feature behavior through a typed reference, a small contract, or an event. Keep view internals private to their owner. Check for dependency cycles and scene initialization order.
 
@@ -29,5 +29,5 @@ Introduce a folder, interface, or assembly boundary when it serves a specific de
 
 - Map the dependency direction before introducing an assembly definition. Keep Editor code in an Editor-only assembly if a parent assembly would otherwise include it. Resolve dependencies on predefined assemblies before moving their callers into a new assembly.
 - Move one responsibility at a time. Preserve serialized field and type identities, persistent events, save formats, asset GUIDs, and scene wiring. Assign ownership of subscriptions and cleanup when moving callbacks.
-- When production code moves, move its tests to the corresponding mirrored path under `Assets/_Game/Tests/` and update test assembly references. Do not introduce feature-local test folders as part of a split.
+- Keep the test mirror and assembly references aligned when production code moves.
 - In a review, identify the caller, owner, and concrete reason for a split. After a change, verify compilation and the affected behavior, including scene bindings or persistence where applicable.

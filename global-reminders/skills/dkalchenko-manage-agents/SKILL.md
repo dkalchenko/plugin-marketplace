@@ -1,29 +1,37 @@
 ---
 name: dkalchenko-manage-agents
-description: Initialize or update AGENTS.md task-to-skill routing for enabled skills from plugins in `plugin-marketplace`, including recording a user's opt-out. Use when project skill-routing instructions are missing, stale, or explicitly requested; this workflow is language-neutral.
+description: Initialize, reconcile, or record an opt-out for AGENTS.md routing of enabled skills supplied by plugin-marketplace plugins.
 ---
 
 # Manage AGENTS skill routing
 
-Maintain a project-owned record of which enabled skills apply to which tasks. Include a skill only when its supplying plugin is enabled and its marketplace identity is exactly `plugin-marketplace`. Exclude standalone skills (including this setup skill) and plugins from other marketplaces. Do not install or enable skills.
+Maintain task-to-skill routing for enabled skills whose supplying plugin belongs to `plugin-marketplace`. Exclude standalone skills, including this helper, and other marketplaces. This workflow does not install or enable plugins.
 
-## Discover and decide
+## Establish scope and inventory
 
-- Resolve the actual task workspace and read the applicable `AGENTS.md` hierarchy, including nested instructions for target files. Never use the plugin folder as the project root. Preserve unrelated instructions and edits.
-- Inspect the skills exposed as enabled/available for this session by the host: names, descriptions, invocation policies, and sources. Match the host's provider metadata or full plugin selector (`<plugin>@plugin-marketplace`) to the enabled skill. A name or `dkalchenko-` prefix alone is insufficient. When provenance is unknown, skip new entries and report the uncertainty. Installed folders and marketplace catalogs alone do not establish that skills are enabled. Do not scan unrelated user directories to guess an inventory. Report incomplete host inventories; ask for missing information only when needed.
-- Respect existing routing requirements, including unmarked sections. Honor an explicit decline without repeated prompts. A later explicit request to enable routing supersedes the decline.
-- When neither routing requirements nor a recorded decision exist, ask once: "Add task-to-skill routing for enabled skills from plugin-marketplace plugins to this project's AGENTS.md? If you decline, I will record that choice in AGENTS.md so you are not asked repeatedly." Wait before editing routing. Continue independent work and remember the pending question so repeated hooks do not repeat it.
-- An explicit request to initialize or update routing authorizes that work; do not ask again. A no authorizes only the disclosed decline record. If the user also forbids writing AGENTS.md, respect that restriction, remember the decline for this conversation, and explain that it cannot persist to new chats. Do not bypass file permissions.
+- Read the actual task workspace's applicable `AGENTS.md` hierarchy, including nested instructions for target files. Do not substitute an installed plugin directory for the project root.
+- Use the host's current enabled-skill inventory and provider metadata to verify each exact skill and `<plugin>@plugin-marketplace` identity. Names, prefixes, installed folders, and marketplace catalogs alone do not prove enablement.
+- Preserve handwritten routing and explicit invocation policies. If an enabled skill's provenance is unknown, omit new rows for it and report the limitation. Do not scan unrelated directories to guess inventory.
+- A partial, stale, or failed inventory cannot prove disablement. Remove rows only with a complete current inventory or explicit host/user evidence. A settings change awaits host refresh; this is not a background watcher.
 
-## Write or merge
+## Resolve consent
 
-Create `AGENTS.md` at the verified project root if absent. Otherwise merge a focused section. Preserve all unrelated content. For a new section use the block below; when updating it preserve text outside the markers. Keep existing unmarked routing rather than duplicating or contradicting it; align a status block with the existing requirements when needed.
+- **Enabled or previously accepted routing:** synchronize without asking again.
+- **Declined:** do not synchronize or prompt again unless the user explicitly reconsiders. Existing handwritten instructions and explicit skill requests still apply.
+- **Explicit request to initialize or update routing:** proceed within that request.
+- **No recorded decision or existing routing requirement:** ask once: "Add task-to-skill routing for enabled skills from plugin-marketplace plugins to this project's AGENTS.md? If you decline, I will record that choice in AGENTS.md so you are not asked repeatedly."
 
-Once routing is accepted, keep its managed inventory synchronized at session start and before handling a new user prompt. Filter the current enabled inventory to this marketplace before comparing exact plugin and skill identities. When migrating a previously accepted all-skills block, remove confirmed out-of-scope rows from that managed block. Preserve handwritten instructions and declines. Add newly enabled skills with their task triggers; remove disabled or uninstalled skills from the managed table; update renamed skills and changed sources. Acceptance authorizes this routine synchronization without asking again. Skip writing when nothing changed, and do not repeat synchronization before every tool call in the same turn unless the inventory changes.
+Wait for that answer before changing routing; do not repeat a pending question. A no permits only the disclosed decline record, not deletion of existing routing or disabling skills. If writing `AGENTS.md` is also refused, remember the decision for this conversation and explain that it cannot persist to new chats. Continue independent work while waiting.
 
-Only remove an entry when a complete current inventory or explicit host/user evidence establishes that it is disabled or unavailable. A partial inventory, failed lookup, or old session snapshot is not proof of disablement. If the host has not refreshed after an enable/disable action, report that synchronization awaits the refreshed inventory; do not pretend to watch settings changes in real time. Do not delete manually maintained instructions outside the managed block. If they require a disabled skill, report the conflict. Never synchronize a declined setup. A shared repository's inventory reflects this user's session, not every collaborator's configuration.
+## Synchronize the managed block
 
-For acceptance:
+After acceptance, reconcile at session start and before a new user prompt. Recheck during the same turn only if inventory changes. Add newly enabled in-scope skills, update renamed skills and sources, and remove confirmed disabled, uninstalled, or out-of-scope rows. Skip unchanged writes.
+
+Create `AGENTS.md` at the verified root if absent. Otherwise edit only the managed block; preserve unrelated content and existing unmarked routing. Report conflicts with handwritten requirements rather than overwriting them. This inventory reflects the current user's enabled plugins, not every collaborator's setup.
+
+Record one row per exact skill with a useful task trigger and verified provider. Prefer stable, repository-relative sources; label machine-specific locations when unavoidable. Keep an empty table if no in-scope skills are enabled. Do not copy skill bodies or tool inventories into the routing table.
+
+Enabled template:
 
 ```markdown
 <!-- dkalchenko:skill-routing:start -->
@@ -33,25 +41,18 @@ Skill routing: enabled
 
 Marketplace: `plugin-marketplace`
 
-Before working on a task, read applicable AGENTS.md instructions and select
-the skills mapped to that task. Load only relevant skills. Explicit user
-instructions and more specific project rules take precedence.
+Read applicable instructions and load only skills matching the task.
 
-| Enabled skill | Use when | Source / disambiguation |
+| Skill | Use when | Supplying plugin |
 | --- | --- | --- |
-| <exact skill name> | <specific trigger> | <plugin/provider and resolvable source> |
+| <exact skill name> | <task trigger> | <plugin>@plugin-marketplace |
 
-Synchronize this managed inventory with the authoritative enabled-skill
-inventory filtered to plugins from this marketplace. At session start and before a new user prompt, add newly enabled in-scope skills
-and remove confirmed disabled skills; preserve unrelated instructions.
+Synchronize this block with verified enabled skills from this marketplace.
+Preserve unrelated instructions; do not infer disablement from partial inventory.
 <!-- dkalchenko:skill-routing:end -->
 ```
 
-Replace the illustrative row with one row per enabled skill supplied by an enabled `plugin-marketplace` plugin. Keep the table empty if the verified scoped inventory is empty. Group rows only if each exact name and trigger remain discoverable. Do not paste skill bodies or tool inventories. Preserve explicit-only invocation policies. Listing all skills does not mean loading all skills for every task.
-
-Prefer stable provider identities and repository-relative sources. If only machine-specific locations are available, label that limitation instead of inventing portable paths. Do not persist secrets. Disambiguate duplicate names by provider and source. Preserve known user preferences for overlapping skills; otherwise ask when a real conflict affects the task. Do not silently prioritize this marketplace.
-
-For a decline:
+Decline template:
 
 ```markdown
 <!-- dkalchenko:skill-routing:start -->
@@ -60,13 +61,9 @@ For a decline:
 Skill routing: declined
 
 The user declined adding enabled-skill routing requirements to AGENTS.md.
-Do not prompt again unless the user requests reconsideration. Existing project
-instructions and explicit skill requests still apply.
+Do not prompt again unless the user requests reconsideration.
+Existing instructions and explicit skill requests still apply.
 <!-- dkalchenko:skill-routing:end -->
 ```
 
-A decline does not authorize deleting existing routing or disabling skills. Surface conflicts with existing requirements instead.
-
-## Verify
-
-Review the diff for preserved instructions, duplicate blocks, exact names and triggers matched to the inventory, and no new routing requirements in a decline. Report the file changed, recorded decision, and inventory limitations. Neither AGENTS.md nor reminder hooks guarantee compliance.
+Review the diff for preserved content, a single managed block, exact skill identities, and triggers matched to the verified inventory. Report changes, the recorded decision, and inventory limitations. Routing instructions and reminder hooks do not guarantee compliance.
