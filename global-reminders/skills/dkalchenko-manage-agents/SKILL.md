@@ -13,6 +13,7 @@ Maintain task-to-skill routing for enabled skills whose supplying plugin belongs
 - Use the host's current enabled-skill inventory and provider metadata to verify each exact skill and `<plugin>@plugin-marketplace` identity. Names, prefixes, installed folders, and marketplace catalogs alone do not prove enablement.
 - Preserve handwritten routing and explicit invocation policies. If an enabled skill's provenance is unknown, omit new rows for it and report the limitation. Do not scan unrelated directories to guess inventory.
 - A partial, stale, or failed inventory cannot prove disablement. Remove rows only with a complete current inventory or explicit host/user evidence. A settings change awaits host refresh; this is not a background watcher.
+- When the routing hook reports a skill change, discard that skill's cached rules. Before applying it again, read its current resolved `SKILL.md` and relevant reference files, including references previously loaded in this chat. The hook compares local Codex inventory and file hashes per chat on new prompts; if that inventory differs from the current host's, reconcile the provider and path first. Do not load unrelated skills or override explicit invocation policies because of a change notice.
 
 ## Resolve consent
 

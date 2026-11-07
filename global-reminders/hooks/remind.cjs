@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { checkSkillChanges } = require('./skill-changes.cjs');
 
 const start = '<!-- dkalchenko:skill-routing:start -->';
 const end = '<!-- dkalchenko:skill-routing:end -->';
@@ -35,7 +36,7 @@ function inspectRouting(cwd) {
   return { status: 'unrecorded', files, ...decision };
 }
 
-try {
+async function main() {
   const input = JSON.parse(fs.readFileSync(0, 'utf8'));
   const events = ['SessionStart', 'UserPromptSubmit', 'PreToolUse', 'SubagentStart'];
   if (!input || !events.includes(input.hook_event_name)) {
@@ -49,14 +50,26 @@ try {
     unrecorded: 'No managed decision was found. First read the files: existing unmarked routing requirements also count. If no routing requirement or explicit decline exists, ask once whether to add routing only for enabled skills from plugins in plugin-marketplace; explain that a no will be recorded in AGENTS.md. Wait for the answer before editing, do not repeat a pending question, and use the setup workflow to record the answer. Respect a refusal to write the file.',
     unknown: 'Resolve the actual workspace and inspect applicable instructions before deciding whether setup is needed. Do not infer consent or absence of routing from this incomplete check.'
   };
-  const context = `AGENTS SKILL ROUTING: Read applicable AGENTS.md files to determine which skills to use for this task, including more specific files for the target paths. Hook check: ${JSON.stringify(routing)}. ${instructions[routing.status]} For initialization or reconciliation, read the generic workflow at ${JSON.stringify(setupPath)}. The hook cannot enumerate enabled skills; verify the supplying plugin and marketplace identity using the host inventory. Exclude standalone skills and other marketplaces. This is a reminder, not permission to edit or override project instructions.`;
+  let changes = '';
+  if (routing.status === 'enabled') {
+    try {
+      changes = await checkSkillChanges(input);
+    } catch (error) {
+      // Tracking is advisory. An unavailable inventory or unreadable file must
+      // not block the prompt or erase the previous successful snapshot.
+      process.stderr.write(`AGENTS skill-change check skipped: ${error.message}\n`);
+    }
+  }
+  const context = `AGENTS SKILL ROUTING: Read applicable AGENTS.md files to determine which skills to use for this task, including more specific files for the target paths. Hook check: ${JSON.stringify(routing)}. ${instructions[routing.status]} For initialization or reconciliation, read the generic workflow at ${JSON.stringify(setupPath)}. Verify the supplying plugin and marketplace identity using the host inventory. Exclude standalone skills and other marketplaces. Skill-change checks use the local Codex skills/list inventory; if this chat's host inventory differs, reconcile it before applying updated rules. This is a reminder, not permission to edit or override project instructions.${changes ? `\n\n${changes}` : ''}`;
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {
       hookEventName: input.hook_event_name,
       additionalContext: context
     }
   }));
-} catch (error) {
+}
+
+main().catch(error => {
   process.stderr.write(`AGENTS skill-routing reminder failed: ${error.message}\n`);
   process.exitCode = 1;
-}
+});

@@ -47,6 +47,7 @@ foreach ($event in $events) {
 }
 
 New-Item -ItemType Directory -Path $hookFolder, (Join-Path $skillFolder 'agents') -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $sourceRoot 'hooks/skill-changes.cjs') -Destination (Join-Path $hookFolder 'skill-changes.cjs') -Force
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'hooks/remind.cjs') -Destination $hookFile -Force
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'skills/dkalchenko-manage-agents/SKILL.md') -Destination (Join-Path $skillFolder 'SKILL.md') -Force
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'skills/dkalchenko-manage-agents/agents/openai.yaml') -Destination (Join-Path $skillFolder 'agents/openai.yaml') -Force

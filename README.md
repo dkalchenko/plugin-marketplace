@@ -61,12 +61,24 @@ Run from the repository root in PowerShell 7:
 
 The installer uses `CODEX_HOME`, or `~/.codex` when unset. For another home, use `-TargetCodexHome <directory>` and launch Codex with the same `CODEX_HOME`. Restart Codex and review/trust the four hooks. Rerun the installer after changing the user-level hook or helper source.
 
-The hooks inspect workspace/ancestor `AGENTS.md` decisions and remind the assistant to check more specific instructions. They do not edit routing or enumerate enabled skills. The helper:
+The hooks inspect workspace/ancestor `AGENTS.md` decisions and remind the assistant to check more specific instructions. They do not edit routing. The helper:
 
 - Asks once before first-time setup and records acceptance or the disclosed decline.
 - After acceptance, synchronizes the managed block at session start and before new prompts, using verified enabled skills from this marketplace only.
 - Preserves handwritten instructions, skips unchanged writes, and never treats a partial or stale inventory as evidence of disablement.
 - Honors refusals to write `AGENTS.md`; those cannot persist to later chats without a file.
+
+For enabled routing, `SessionStart` records a quiet baseline and `UserPromptSubmit` compares the current enabled `plugin-marketplace` skills with that chat's previous snapshot. The hook queries the local Codex app-server's `skills/list` API with `forceReload`, using the workspace configuration and verified plugin IDs. It tracks each skill's declared and resolved path, plugin version, and SHA-256 file hashes. Hashes cover the entire skill directory, including references, and recursively linked Markdown files inside the supplying plugin. Remote links and files outside that plugin are not read.
+
+When a version, path, or file changes, the next prompt receives a notice such as:
+
+> code-style@plugin-marketplace: code-style:dkalchenko-dotnet-code-style changed from "0.3.1" to "0.3.2". Re-read its current SKILL.md and references before applying its rules.
+
+The actual notice includes the current absolute skill path. New or removed enabled skills also produce a notice. Unchanged prompts produce no skill-change notice, and tool/subagent hooks do not consume changes. Resuming or compacting an existing chat preserves pending changes for the next user prompt. Existing routing reminders still run as before.
+
+Snapshots contain only paths, versions, and hashes under `<CODEX_HOME>/state/dkalchenko-skill-routing/<hashed-session-id>/<hashed-workspace>.json`. Each chat and workspace has independent state; deleting a snapshot resets its baseline. The hook keeps the last good snapshot on inventory or file errors, logs a diagnostic to stderr, and allows the prompt to proceed. A failed or incomplete inventory is never treated as removal. Snapshot reads are limited to 2,000 files and 32 MiB per skill.
+
+Change tracking requires a local `codex` executable supporting `app-server` and `skills/list` with `enabled` and `pluginId` metadata. Set `DKALCHENKO_CODEX_BIN` to an executable path if it is not on `PATH`. The inventory request has a three-second timeout within the existing five-second hook timeout. It starts an inventory-only app-server process, without creating a chat or running a model. This local inventory can differ from a desktop/cloud host or session-specific overrides; the assistant must reconcile such differences with its current host inventory. Updating source alone still does not refresh an installed plugin.
 
 Invoke `$dkalchenko-manage-agents` to reconcile routing explicitly. Installed plugin folders and the source catalog are not proof of enablement; new skills enter routing only after the host exposes them. Hooks require Node.js and a host that executes and trusts them. Neither hooks nor skill instructions guarantee model compliance.
 
@@ -86,8 +98,10 @@ plugins/
 global-reminders/
   install.ps1
   hooks/remind.cjs
+  hooks/skill-changes.cjs
   skills/dkalchenko-manage-agents/
 tests/marketplace.test.cjs
+tests/skill-changes.test.cjs
 ```
 
 Each plugin owns its manifest, version, and skills. There is no root `plugin.json`; catalog paths resolve from the repository root. Keep skill references inside their supplying plugin so installations remain self-contained.
@@ -104,8 +118,9 @@ Keep names and existing skill invocation policies stable during ordinary edits. 
 
 ```powershell
 node tests/marketplace.test.cjs
+node --test tests/skill-changes.test.cjs
 ```
 
-This checks catalog identity, unique entries, paths, and manifest names. Also check edited skill metadata and relative links. Source checks do not verify installation, hook trust, credentials, or interactive model behavior.
+These checks validate the catalog and exercise skill changes, reference files, upgrades, per-chat state, inventory failures, the app-server protocol, and hook output. Also check edited skill metadata and relative links. Source checks do not verify installation, hook trust, credentials, or interactive model behavior.
 
 References: [plugin packaging and marketplaces](https://developers.openai.com/plugins/build/plugins), [Codex hooks](https://learn.chatgpt.com/docs/hooks).
