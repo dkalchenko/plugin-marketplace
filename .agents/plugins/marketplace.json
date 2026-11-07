@@ -53,10 +53,10 @@
       "category": "Developer Tools"
     },
     {
-      "name": "github-repository",
+      "name": "user-prompt-handling",
       "source": {
         "source": "local",
-        "path": "./plugins/github-repository"
+        "path": "./plugins/user-prompt-handling"
       },
       "policy": {
         "installation": "AVAILABLE",

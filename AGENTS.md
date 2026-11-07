@@ -18,8 +18,6 @@ Use the matching skill from the listed plugin when the task calls for it.
 | `project-architecture` | `dkalchenko-unity-stale-files` | Identifying unused Unity files after replacing or retiring files, or when cleanup is requested. |
 | `git-repository` | `dkalchenko-git-branch` | Naming and creating a local branch when requested. |
 | `git-repository` | `dkalchenko-git-commit` | Reviewing and committing local changes or suggesting commit messages when requested. |
-| `github-repository` | `dkalchenko-github-branch-creation` | Creating a requested missing remote GitHub branch from an existing commit. |
-| `github-repository` | `dkalchenko-github-push` | Publishing existing local commits to GitHub when a push is requested. |
 
 Synchronize only enabled skills supplied by plugins from this marketplace. Remove confirmed disabled or uninstalled entries. Preserve instructions outside this block.
 <!-- dkalchenko:skill-routing:end -->

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "user-prompt-handling",
+  "version": "0.1.0",
+  "description": "Guide how to answer user prompts, confirm their interpretation, and propose corrections before generating code.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "User Prompt Handling",
+        "shortDescription": "Confirm and improve prompts",
+        "category": "Developer Tools",
+        "capabilities": ["Instructions"]
+      }
+    }
+  }
+}

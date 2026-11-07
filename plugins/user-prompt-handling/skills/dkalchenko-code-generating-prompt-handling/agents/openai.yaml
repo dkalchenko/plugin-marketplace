@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code-Generating Prompt Handling"
+  short_description: "Confirm coding intent and review proposed corrections"
+  default_prompt: "Use $dkalchenko-code-generating-prompt-handling to confirm my coding request and discuss useful corrections before implementation."

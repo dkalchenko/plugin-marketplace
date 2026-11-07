@@ -7,12 +7,16 @@ A marketplace for independently installable Codex plugins, prepared for `dkalche
 | Code Architecture | [Unity feature boundaries and dependencies](plugins/code-architecture/skills/dkalchenko-unity-code-architecture/SKILL.md) and [stale code removal](plugins/code-architecture/skills/dkalchenko-stale-code-removal/SKILL.md) | `code-architecture@plugin-marketplace` |
 | Project Architecture | Unity [file placement](plugins/project-architecture/skills/dkalchenko-unity-file-placement/SKILL.md), [file naming](plugins/project-architecture/skills/dkalchenko-unity-file-naming/SKILL.md), [assemblies](plugins/project-architecture/skills/dkalchenko-unity-assemblies/SKILL.md), and [stale file removal](plugins/project-architecture/skills/dkalchenko-unity-stale-files/SKILL.md) | `project-architecture@plugin-marketplace` |
 | [Code Style](plugins/code-style/skills/dkalchenko-dotnet-code-style/SKILL.md) | Microsoft-based C# conventions | `code-style@plugin-marketplace` |
-| Git Repository | [Review and commit task changes](plugins/git-repository/skills/dkalchenko-git-commit/SKILL.md) and [create local branches](plugins/git-repository/skills/dkalchenko-git-branch/SKILL.md) | `git-repository@plugin-marketplace` |
-| GitHub Repository | [Push commits](plugins/github-repository/skills/dkalchenko-github-push/SKILL.md) and [create missing GitHub branches](plugins/github-repository/skills/dkalchenko-github-branch-creation/SKILL.md) with the GitHub CLI | `github-repository@plugin-marketplace` |
+| Git Repository | [Review and commit task changes](plugins/git-repository/skills/dkalchenko-git-commit/SKILL.md), [create local branches](plugins/git-repository/skills/dkalchenko-git-branch/SKILL.md), and [push existing commits with Git](plugins/git-repository/skills/dkalchenko-git-push/SKILL.md) | `git-repository@plugin-marketplace` |
+| User Prompt Handling | [Confirm coding requests and discuss proposed corrections](plugins/user-prompt-handling/skills/dkalchenko-code-generating-prompt-handling/SKILL.md) before implementation | `user-prompt-handling@plugin-marketplace` |
 
 Code Style contains `$dkalchenko-dotnet-code-style` for C# conventions. See its [rules and examples](plugins/code-style/skills/dkalchenko-dotnet-code-style/references/rules-and-examples.md). Install with `codex plugin add code-style@plugin-marketplace` after registering this marketplace. Version 0.3.0 moves generic AGENTS routing out of this plugin and removes its reminder hooks; `$dotnet-code-style` was previously renamed to `$dkalchenko-dotnet-code-style`.
 
 Code Architecture exposes `$dkalchenko-unity-code-architecture` and `$dkalchenko-stale-code-removal`. Project Architecture exposes `$dkalchenko-unity-file-placement`, `$dkalchenko-unity-file-naming`, `$dkalchenko-unity-assemblies`, and `$dkalchenko-unity-stale-files`. Install each plugin separately using its selector above. When enabled, the user-level AGENTS reminders guide skill selection.
+
+Git Repository exposes `$dkalchenko-git-commit`, `$dkalchenko-git-branch`, and `$dkalchenko-git-push`. Pushes use Git's configured remotes and authentication to publish already committed changes.
+
+User Prompt Handling exposes `$dkalchenko-code-generating-prompt-handling`. It repeats the interpretation and correction loop until the user confirms Yes, then reviews the planned code for concrete security, complexity, simplification, or alternative-approach concerns. Proposed corrections offer Accept correction, Proceed with user's prompt, and free-text input through the host's question interface.
 
 ## User-level skill reminders
 
@@ -35,8 +39,7 @@ User-level hooks are documented in [Codex hooks](https://learn.chatgpt.com/docs/
 ## Requirements
 
 - Codex CLI with `codex plugin marketplace` and `codex plugin add` commands.
-- Git for GitHub installation.
-- An authenticated GitHub CLI (`gh`) for the GitHub Repository skills.
+- Git for repository workflows and GitHub installation.
 - Node.js available as `node` for user-level reminder hooks; no npm dependencies are required.
 - For a private repository: Git authentication with access to the repository. Use the SSH option if your access is through SSH.
 
@@ -116,10 +119,10 @@ plugins/
     plugin.json
     skills/dkalchenko-git-commit/
     skills/dkalchenko-git-branch/
-  github-repository/
+    skills/dkalchenko-git-push/
+  user-prompt-handling/
     plugin.json
-    skills/dkalchenko-github-push/
-    skills/dkalchenko-github-branch-creation/
+    skills/dkalchenko-code-generating-prompt-handling/
 tests/marketplace.test.cjs
 ```
 

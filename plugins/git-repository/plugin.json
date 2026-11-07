@@ -1,13 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "git-repository",
-  "version": "0.1.1",
-  "description": "Review and commit scoped changes and create named branches in a local Git repository.",
+  "version": "0.2.0",
+  "description": "Review and commit scoped changes, create local branches, and push existing commits with Git.",
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Git Repository",
-        "shortDescription": "Local commits and branches",
+        "shortDescription": "Commits, branches, and pushes",
         "category": "Developer Tools",
         "capabilities": ["Instructions"]
       }
