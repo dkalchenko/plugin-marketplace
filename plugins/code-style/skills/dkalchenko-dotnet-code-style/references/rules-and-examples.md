@@ -111,6 +111,38 @@ switch (status)
 
 Use spacing to show changes in purpose rather than separating every statement. Do not stack multiple blank lines or add padding immediately inside braces. These spacing choices are deliberate skill preferences; explicit project conventions still take precedence.
 
+## Conditional expressions
+
+Do not nest one ternary conditional expression (`?:`) inside another, even when split across lines. Move the outer decision into `if`/`else`; a single non-nested ternary inside a branch is allowed. Preserve evaluation order and evaluate only the selected branch.
+
+Avoid:
+
+```csharp
+string author = _message.SenderId == _chatInfo.Sender.Id
+    ? _chatInfo.Sender.DisplayName
+    : _message.SenderId == _chatInfo.Receiver.Id
+        ? _chatInfo.Receiver.DisplayName
+        : _message.SenderId;
+```
+
+Prefer:
+
+```csharp
+string author;
+
+if (_message.SenderId == _chatInfo.Sender.Id)
+{
+    author = _chatInfo.Sender.DisplayName;
+}
+
+else
+{
+    author = _message.SenderId == _chatInfo.Receiver.Id
+        ? _chatInfo.Receiver.DisplayName
+        : _message.SenderId;
+}
+```
+
 ## Action and event naming
 
 Use `On{Condition}Event` for action delegate members (including `Action` and `Action<T>`) and C# events. `Condition` describes what triggers the notification, in PascalCase; keep `On` and `Event` literal. For example:
