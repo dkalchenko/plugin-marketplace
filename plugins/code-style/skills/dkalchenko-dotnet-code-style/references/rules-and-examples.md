@@ -7,6 +7,7 @@ These are original illustrative fragments, not complete programs. Project rules 
 | Descriptive names | `int n = 3;` | `int retryCount = 3;` |
 | Types and interfaces | `class order`, `interface repository` | `class Order`, `interface IRepository` |
 | Members and constants | `get_total()`, `MAX_RETRIES` | `GetTotal()`, `MaxRetries` |
+| Actions and events | `UserCreated`, `userCreation` | `OnUserCreationEvent` |
 | Test methods | `CalculateTotalTest()`, `ShouldReturnZero()` | `Should_CalculateTotal_ReturnZero_When_CartIsEmpty()` |
 | Parameters and locals | `string CustomerName` | `string customerName` |
 | Instance fields | `private int count;` | `private int _count;` |
@@ -51,6 +52,17 @@ Comments should preserve a reason that would otherwise be lost:
 // After: Count failed attempts too, so the retry limit remains bounded.
 attemptCount++;
 ```
+
+## Action and event naming
+
+Use `On{Condition}Event` for action delegate members (including `Action` and `Action<T>`) and C# events. `Condition` describes what triggers the notification, in PascalCase; keep `On` and `Event` literal. For example:
+
+```csharp
+public Action OnUserCreationEvent;
+public event Action OnUserDeletionEvent;
+```
+
+This is a deliberate skill preference, not a Microsoft naming rule. It overrides the general field-prefix defaults for action delegate members. Handler and event-raising methods keep the ordinary method naming convention; explicit project conventions still take precedence.
 
 ## Test naming
 
