@@ -53,6 +53,64 @@ Comments should preserve a reason that would otherwise be lost:
 attemptCount++;
 ```
 
+## Blank lines and grouping
+
+Separate methods, control-flow branches, logical code blocks within methods, and groups of related fields or properties with one blank line. Group fields and properties by purpose; keep declarations within a group adjacent. Place a blank line between a branch's closing brace and the following `else if` or `else`. For example:
+
+```csharp
+private string _firstName;
+private string _lastName;
+
+private int _retryCount;
+private int _retryLimit;
+
+public string DisplayName { get; private set; }
+public string Email { get; private set; }
+
+public bool IsActive { get; private set; }
+public bool IsVerified { get; private set; }
+
+public void Refresh()
+{
+    User user = LoadUser();
+    Validate(user);
+
+    if (user.IsActive)
+    {
+        DisplayName = user.DisplayName;
+        Email = user.Email;
+    }
+
+    else
+    {
+        Clear();
+    }
+}
+
+public void Clear()
+{
+    DisplayName = string.Empty;
+    Email = string.Empty;
+}
+```
+
+Separate distinct `switch` sections with one blank line; keep consecutive `case` labels that share a body together:
+
+```csharp
+switch (status)
+{
+    case Status.Ready:
+        Refresh();
+        break;
+
+    case Status.Stopped:
+        Clear();
+        break;
+}
+```
+
+Use spacing to show changes in purpose rather than separating every statement. Do not stack multiple blank lines or add padding immediately inside braces. These spacing choices are deliberate skill preferences; explicit project conventions still take precedence.
+
 ## Action and event naming
 
 Use `On{Condition}Event` for action delegate members (including `Action` and `Action<T>`) and C# events. `Condition` describes what triggers the notification, in PascalCase; keep `On` and `Event` literal. For example:
