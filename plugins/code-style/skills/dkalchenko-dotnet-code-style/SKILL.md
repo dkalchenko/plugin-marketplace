@@ -16,7 +16,8 @@ Use the baseline below for C# where the project has no established rule. This is
 ## Baseline
 
 - Use four spaces and Allman braces, including braces around single-statement control-flow bodies. Keep statements and declarations on separate lines; avoid trailing whitespace and repeated blank lines. Put spaces around binary operators and after commas.
-- Use one blank line between methods, between control-flow branches (`if`/`else if`/`else` and distinct `switch` sections), between logical code blocks within a method, and between groups of related fields or properties. Keep declarations within the same field or property group together without intervening blank lines.
+- Use one blank line between methods, between independent control-flow statements and distinct `switch` sections, between logical code blocks within a method, and between groups of related fields or properties. Keep declarations within the same field or property group together without intervening blank lines.
+- Keep connected `if`/`else if`/`else` branches together as one statement. Place `else if` and `else` on the line immediately after the preceding closing brace, with no intervening blank line.
 - Do not nest ternary conditional expressions (`?:`) inside one another. Use `if`/`else` for the outer decision; a single non-nested ternary may remain within a branch. Preserve the original evaluation order and behavior.
 - Use PascalCase for types, methods, properties, and constants; camelCase for parameters and locals; `I` for interfaces; `_camelCase` for private/internal instance fields, `s_camelCase` for their static fields, and `t_camelCase` for thread-static fields. Prefer descriptive names.
 - For action delegate members and events, use `On{Condition}Event`, for example `OnUserCreationEvent`. Keep `On` and `Event` literal and describe the triggering condition in PascalCase. This is the action/event exception to the general field-prefix rules.

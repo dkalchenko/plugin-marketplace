@@ -55,7 +55,7 @@ attemptCount++;
 
 ## Blank lines and grouping
 
-Separate methods, control-flow branches, logical code blocks within methods, and groups of related fields or properties with one blank line. Group fields and properties by purpose; keep declarations within a group adjacent. Place a blank line between a branch's closing brace and the following `else if` or `else`. For example:
+Separate methods, independent control-flow statements, logical code blocks within methods, and groups of related fields or properties with one blank line. Group fields and properties by purpose; keep declarations within a group adjacent. Treat a connected `if`/`else if`/`else` chain as one statement: `else if` and `else` go on the line immediately after the preceding closing brace, with no intervening blank line. For example:
 
 ```csharp
 private string _firstName;
@@ -80,7 +80,6 @@ public void Refresh()
         DisplayName = user.DisplayName;
         Email = user.Email;
     }
-
     else
     {
         Clear();
@@ -134,7 +133,6 @@ if (_message.SenderId == _chatInfo.Sender.Id)
 {
     author = _chatInfo.Sender.DisplayName;
 }
-
 else
 {
     author = _message.SenderId == _chatInfo.Receiver.Id
