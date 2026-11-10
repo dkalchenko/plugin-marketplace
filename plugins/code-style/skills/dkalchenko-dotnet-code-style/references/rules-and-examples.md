@@ -170,6 +170,46 @@ Should_OrderService_RejectOrder_When_PaymentFails()
 
 This test-method convention is a deliberate skill preference, not a Microsoft naming rule. It is an exception to the general PascalCase method baseline; explicit project conventions still take precedence.
 
+## Readability and presentation mappings
+
+A condition's name should explain the decision. For example, a view can use a cheap state predicate:
+
+```csharp
+private bool CanReadEntries => _visible && _context.IsLoaded && !_reading;
+```
+
+Use a method such as `JoinsPreviousTextElement(current, previous)` for a parameterized rule. Preserve null guards and short-circuiting when extracting checks; eagerly computing separate booleans can change which expressions execute.
+
+For validation, prefer names such as `ValidatePayloadIdentity` and `ValidateEntryIndex` over a long mixed condition or helpers named `ValidatePart1`. Keep the existing trust boundaries and failure behavior.
+
+Extract presentation mappings in extensions:
+
+```csharp
+internal static class ContextSourceKindExtensions
+{
+    internal static string ToDisplayLabel(this ContextSourceKind kind) => kind switch
+    {
+        ContextSourceKind.Message => "MSG",
+        ContextSourceKind.File => "FILE",
+        _ => kind.ToString()
+    };
+}
+
+// In the view:
+sourceLabel.text = source.Kind.ToDisplayLabel();
+```
+
+Keep this extension in presentation code. These labels are illustrative; preserve the application's localization and unknown-value handling when moving an existing mapping.
+
+A short comment can explain a deliberately unused result:
+
+```csharp
+// Strict encoding rejects malformed UTF-16 before persistence can replace it.
+strictUtf8Encoding.GetByteCount(text);
+```
+
+These readability and placement choices are project conventions, not requirements imposed by C# or Microsoft.
+
 ## Source and adaptation notes
 
 - [Microsoft Learn: common C# conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) provides the basis for clear type inference, keyword types, interpolation, and comments. Its documentation examples adopt newer language features faster than many applications; this skill keeps the project's compatibility constraints.

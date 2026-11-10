@@ -31,6 +31,14 @@ Use the baseline below for C# where the project has no established rule. This is
 
 Read [rules and examples](references/rules-and-examples.md) when explaining the conventions or resolving an ambiguous application. It includes the authoritative sources and the baseline's deliberate choices.
 
+## Readability
+
+- Name complex conditions by intent. Use a property for a cheap, side-effect-free state predicate, a method for a parameterized check, or a local boolean for a check used only in that block. Keep simple conditions inline and preserve short-circuit evaluation.
+- Split hard-to-read validation into coherent checks for identity, structure, limits, or content. Name helpers by what they validate and give failures specific messages. Preserve boundary validation and its evaluation order; do not add a helper for every comparison.
+- Keep shared feature policy constants in the existing feature constants class, including their use in API defaults. Keep implementation-only constants local and do not combine unrelated features' constants.
+- Extract presentation mappings in extensions. Put value-to-label or value-to-display mappings in focused extension methods within the presentation layer, and call them from views. Preserve localization and fallback behavior; keep business decisions and state changes out of mapping extensions.
+- Explain deliberately surprising operations with a short why comment when the code alone hides their purpose, such as ignoring a return value from a call that validates by throwing.
+
 ## Apply or review
 
 For edits, use existing formatting/analyzer tooling if available and scope it to the requested changes. Do not install tooling, add configuration, or rewrite a repository just to enforce this skill unless requested. Inspect the resulting diff for accidental behavioral changes.
