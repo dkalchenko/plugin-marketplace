@@ -1,6 +1,6 @@
 {
   "name": "code-style",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Microsoft-based C# conventions that respect project style rules.",
   "skills": "./skills/",
   "interface": {
