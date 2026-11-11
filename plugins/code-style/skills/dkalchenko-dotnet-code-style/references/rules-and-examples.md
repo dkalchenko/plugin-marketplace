@@ -8,7 +8,7 @@ These are original illustrative fragments, not complete programs. Project rules 
 | Types and interfaces | `class order`, `interface repository` | `class Order`, `interface IRepository` |
 | Members and constants | `get_total()`, `MAX_RETRIES` | `GetTotal()`, `MaxRetries` |
 | Actions and events | `UserCreated`, `userCreation` | `OnUserCreationEvent` |
-| Test methods | `CalculateTotalTest()`, `ShouldReturnZero()` | `Should_CalculateTotal_ReturnZero_When_CartIsEmpty()` |
+| Test methods | `CalculateTotalTest()`, `ShouldReturnZero()` | `CalculateTotal_should_ReturnZero_When_CartIsEmpty()` |
 | Parameters and locals | `string CustomerName` | `string customerName` |
 | Instance fields | `private int count;` | `private int _count;` |
 | Static fields | `private static int count;` | `private static int s_count;` |
@@ -154,18 +154,18 @@ This is a deliberate skill preference, not a Microsoft naming rule. It overrides
 
 ## Test naming
 
-Use `Should_{class/method}_{what to do}_{when}_{condition}`, written as `Should_{ClassOrMethod}_{ExpectedBehavior}_When_{Condition}` in C# test method names:
+Use `{class/method}_should_{what to do}_{when}_{condition}`, written as `{ClassOrMethod}_should_{ExpectedBehavior}_When_{Condition}` in C# test method names:
 
 - `ClassOrMethod`: the class or method under test; choose the one that best identifies the tested behavior.
 - `ExpectedBehavior`: what it should do or return.
 - `When`: the literal condition separator.
 - `Condition`: the circumstances that produce the expected behavior.
 
-Keep `Should` literal. Use PascalCase inside each descriptive segment and underscores between segments. For example:
+Keep `should` literal and lowercase. Use PascalCase inside each descriptive segment and underscores between segments. For example:
 
 ```csharp
-Should_CalculateTotal_ReturnZero_When_CartIsEmpty()
-Should_OrderService_RejectOrder_When_PaymentFails()
+CalculateTotal_should_ReturnZero_When_CartIsEmpty()
+OrderService_should_RejectOrder_When_PaymentFails()
 ```
 
 This test-method convention is a deliberate skill preference, not a Microsoft naming rule. It is an exception to the general PascalCase method baseline; explicit project conventions still take precedence.
